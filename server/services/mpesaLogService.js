@@ -1,20 +1,26 @@
-const prisma = require("./prismaClient");
+const { getDb } = require("./mongoClient");
 
-function createLogEntry(data) {
-  return prisma.mpesaLog.create({
-    data,
-  });
+async function createLogEntry(data) {
+  const db = await getDb();
+  const document = {
+    ...data,
+    createdAt: new Date(),
+  };
+  const result = await db.collection("mpesa_logs").insertOne(document);
+  return { ...document, id: result.insertedId };
 }
 
-function createCallbackLog({ eventType, payload, transactionId, paymentRequestId }) {
-  return prisma.callbackLog.create({
-    data: {
-      eventType,
-      payload,
-      transactionId,
-      paymentRequestId,
-    },
-  });
+async function createCallbackLog({ eventType, payload, transactionId, paymentRequestId }) {
+  const db = await getDb();
+  const document = {
+    eventType,
+    payload,
+    transactionId,
+    paymentRequestId,
+    createdAt: new Date(),
+  };
+  const result = await db.collection("callback_logs").insertOne(document);
+  return { ...document, id: result.insertedId };
 }
 
 module.exports = {

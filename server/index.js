@@ -8,6 +8,7 @@ const { apiRateLimiter } = require("./middleware/rateLimiter");
 const errorHandler = require("./middleware/errorHandler");
 
 const mpesaLogRoutes = require("./routes/mpesaLogRoutes");
+const mpesaRoutes = require("./routes/mpesaRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/mpesa/logs", mpesaLogRoutes);
+app.use("/api/mpesa", mpesaRoutes);
 
 app.use(errorHandler);
 
